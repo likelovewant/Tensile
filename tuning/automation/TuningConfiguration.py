@@ -29,50 +29,59 @@ import argparse
 
 
 def printExit(message):
-  print ("Tensile::FATAL: %s" % message)
-  sys.stdout.flush()
-  sys.exit(-1)
+    print("Tensile::FATAL: %s" % message)
+    sys.stdout.flush()
+    sys.exit(-1)
+
 
 try:
-  import yaml
+    import yaml
 except ImportError:
-  printExit("You must install PyYAML to use Tensile (to parse config files). See http://pyyaml.org/wiki/PyYAML for installation instructions.")
+    printExit(
+        "You must install PyYAML to use Tensile (to parse config files). See http://pyyaml.org/wiki/PyYAML for installation instructions."
+    )
 
-#HR = "################################################################################"
+# HR = "################################################################################"
 
 
-def ensurePath( path ):
-  if not os.path.exists(path):
-    os.makedirs(path)
-  return path
+def ensurePath(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path
+
 
 ################################################################################
 # Define Constants
 ################################################################################
 
+
 def constant(f):
-  def fset(self, value):
-    raise TypeError
-  def fget(self):
-    return f(self)
-  return property(fget, fset)
+    def fset(self, value):
+        raise TypeError
+
+    def fget(self):
+        return f(self)
+
+    return property(fget, fset)
+
 
 class _Const(object):
-  @constant
-  def GlobalParameters(self):
-    return "GlobalParameters"
+    @constant
+    def GlobalParameters(self):
+        return "GlobalParameters"
 
-  @constant
-  def BenchmarkProblems(self):
-    return "BenchmarkProblems"
+    @constant
+    def BenchmarkProblems(self):
+        return "BenchmarkProblems"
 
-  @constant
-  def LibraryLogic(self):
-    return "LibraryLogic"
+    @constant
+    def LibraryLogic(self):
+        return "LibraryLogic"
 
-  @constant
-  def LibraryClient(self):
-    return "LibraryClient"
+    @constant
+    def LibraryClient(self):
+        return "LibraryClient"
+
 
 CONST = _Const()
 
@@ -102,12 +111,13 @@ defaultHeader["PrintWinnersOnly"] = 1
 defaultHeader["PrintSolutionRejectionReason"] = True
 defaultHeader["DataInitTypeAB"] = 0
 
+
 ################################################################################
 # Tuning Configuration Container
 ################################################################################
 class TuningConfiguration(object):
-    #__slots__ = ['__globalParameters','__benchmarkProblems','__libraryLogic','__libraryClient']
-    def __init__(self,fileName=None):
+    # __slots__ = ['__globalParameters','__benchmarkProblems','__libraryLogic','__libraryClient']
+    def __init__(self, fileName=None):
         self.__globalParameters = None
         self.__benchmarkProblems = None
         self.__libraryLogic = None
@@ -118,7 +128,7 @@ class TuningConfiguration(object):
             try:
                 stream = open(fileName, "r")
             except IOError:
-                printExit("Cannot open file: %s" % filename )
+                printExit("Cannot open file: %s" % filename)
 
             data = yaml.load(stream, yaml.SafeLoader)
 
@@ -176,9 +186,9 @@ class TuningConfiguration(object):
     def libraryClient(self, value):
         self.__libraryClient = value
 
-    def writeLibraryLogic(self,filename):
+    def writeLibraryLogic(self, filename):
 
-  # work around to output data in order
+        # work around to output data in order
         dataGlobal = {}
         dataBenchmark = {}
         dataLibraryLogic = {}
@@ -193,7 +203,7 @@ class TuningConfiguration(object):
 
             if self.benchmarkProblems:
                 dataBenchmark[CONST.BenchmarkProblems] = self.benchmarkProblems
-                #yaml.dump(dataBenchmark, stream, default_flow_style=None, default_style='', width=1024)
+                # yaml.dump(dataBenchmark, stream, default_flow_style=None, default_style='', width=1024)
                 yaml.safe_dump(dataBenchmark, stream, default_flow_style=None)
                 stream.flush()
 
@@ -221,7 +231,7 @@ def generateProblemType(initialParams, tileAware=True):
             "UseBeta": True,
             "TransposeA": False,
             "TransposeB": True,
-            "TileAwareSelection": True
+            "TileAwareSelection": True,
         }
     else:
         problemType = {
@@ -241,38 +251,106 @@ def generateProblemType(initialParams, tileAware=True):
     return problemType
 
 
-arcturusLibraryLogic={'ArchitectureName': 'gfx908', 'DeviceNames': ['Device 7380', 'Device 7388', 'Device 738c', 'Device 7390'], 'ScheduleName': 'arcturus'}
-vega20LibraryLogic={'ArchitectureName': 'gfx906', 'DeviceNames': ['Device 66a0', 'Device 66a1', 'Device 66a7', 'Device 66af', 'Vega 20'], 'ScheduleName': 'vega20'}
-vega10LibraryLogic={'ArchitectureName': 'gfx900', 'DeviceNames': ['Device 6863', 'Device 6862', 'Device 687f', 'Device 6860', 'Device 6861', 'Vega 10 XTX [Radeon Vega Frontier Edition]', 'Vega [Radeon RX Vega]'], 'ScheduleName': 'vega10'}
-mi25LibraryLogic={'ArchitectureName': 'gfx900', 'DeviceNames': ['Device 6860'], 'ScheduleName': 'mi25'}
-r9nanoLibraryLogic={'ArchitectureName': 'gfx803', 'DeviceNames': ['Device 7300'], 'ScheduleName': 'r9nano'}
-hipLibraryLogic={'ArchitectureName': 'fallback', 'DeviceNames': ['Device 0000'], 'ScheduleName': 'hip'}
+arcturusLibraryLogic = {
+    "ArchitectureName": "gfx908",
+    "DeviceNames": ["Device 7380", "Device 7388", "Device 738c", "Device 7390"],
+    "ScheduleName": "arcturus",
+}
+vega20LibraryLogic = {
+    "ArchitectureName": "gfx906",
+    "DeviceNames": [
+        "Device 66a0",
+        "Device 66a1",
+        "Device 66a7",
+        "Device 66af",
+        "Vega 20",
+    ],
+    "ScheduleName": "vega20",
+}
+vega10LibraryLogic = {
+    "ArchitectureName": "gfx900",
+    "DeviceNames": [
+        "Device 6863",
+        "Device 6862",
+        "Device 687f",
+        "Device 6860",
+        "Device 6861",
+        "Vega 10 XTX [Radeon Vega Frontier Edition]",
+        "Vega [Radeon RX Vega]",
+    ],
+    "ScheduleName": "vega10",
+}
+mi25LibraryLogic = {
+    "ArchitectureName": "gfx900",
+    "DeviceNames": ["Device 6860"],
+    "ScheduleName": "mi25",
+}
+r9nanoLibraryLogic = {
+    "ArchitectureName": "gfx803",
+    "DeviceNames": ["Device 7300"],
+    "ScheduleName": "r9nano",
+}
+hipLibraryLogic = {
+    "ArchitectureName": "fallback",
+    "DeviceNames": ["Device 0000"],
+    "ScheduleName": "hip",
+}
+navi22LibraryLogic = {
+    "ArchitectureName": "gfx1031",
+    "DeviceNames": ["Device 73df"],
+    "ScheduleName": "navi22",
+}
 
-libraryLogicMapper={'arcturus': arcturusLibraryLogic, 'vega20': vega20LibraryLogic, 'vega10': vega10LibraryLogic, 'mi25': mi25LibraryLogic, 'r9nano': r9nanoLibraryLogic, 'hip': hipLibraryLogic}
+libraryLogicMapper = {
+    "arcturus": arcturusLibraryLogic,
+    "vega20": vega20LibraryLogic,
+    "vega10": vega10LibraryLogic,
+    "mi25": mi25LibraryLogic,
+    "r9nano": r9nanoLibraryLogic,
+    "hip": hipLibraryLogic,
+    "navi22": navi22LibraryLogic,
+}
+
 
 def getLibraryLogic(logicType):
     libraryLogic = libraryLogicMapper[logicType]
     return libraryLogic
 
+
 def appendMatrixInstructions(benchmarkGroup, matrixInstructions):
     forkedParams = benchmarkGroup["ForkParameters"]
     forkedParams.append({"MatrixInstruction": matrixInstructions})
+
 
 def appendThreadTiles(benchmarkGroup, threadTiles):
     forkedParams = benchmarkGroup["ForkParameters"]
     forkedParams.append({"ThreadTile": threadTiles})
 
+
 def appendWorkGroups(benchmarkGroup, workGroups):
     forkedParams = benchmarkGroup["ForkParameters"]
     forkedParams.append({"WorkGroup": workGroups})
 
+
 def appendGuardSizes(problemSizes, size, modifiedSize):
-    if size[0] % 64 == 0 and size[1] % 128 == 0 and size[3] % 64 == 0 and size[3] >= 128:
+    if (
+        size[0] % 64 == 0
+        and size[1] % 128 == 0
+        and size[3] % 64 == 0
+        and size[3] >= 128
+    ):
         problemSizes.append({"Range": modifiedSize})
 
+
 def appendExactSizes(problemSizes, size):
-    if size[0] % 64 == 0 and size[1] % 128 == 0 and size[3] % 64 == 0 and size[3] >= 128:
+    if (
+        size[0] % 64 == 0
+        and size[1] % 128 == 0
+        and size[3] % 64 == 0
+        and size[3] >= 128
+    ):
         problemSizes.append({"Exact": size})
+
 
 def appendSizes(benchmarkGroup, sizes, tileAware=False, noExact=False, rk=False):
     benchmarkFinalParams = benchmarkGroup["BenchmarkFinalParameters"]
@@ -280,16 +358,31 @@ def appendSizes(benchmarkGroup, sizes, tileAware=False, noExact=False, rk=False)
 
     if noExact == True:
         for size in sizes:
-            modifiedSize = [ [size[0]-1,2,size[0]+1],[size[1]],[size[2]],[size[3]] ]
-            appendGuardSizes(problemSizes,size,modifiedSize)
-            modifiedSize = [ [size[0]],[size[1]-1,2,size[1]+1],[size[2]],[size[3]] ]
-            appendGuardSizes(problemSizes,size,modifiedSize)
-            modifiedSize = [ [size[0]],[size[1]],[size[2]],[size[3]-1,2,size[3]+1] ]
-            appendGuardSizes(problemSizes,size,modifiedSize)
+            modifiedSize = [
+                [size[0] - 1, 2, size[0] + 1],
+                [size[1]],
+                [size[2]],
+                [size[3]],
+            ]
+            appendGuardSizes(problemSizes, size, modifiedSize)
+            modifiedSize = [
+                [size[0]],
+                [size[1] - 1, 2, size[1] + 1],
+                [size[2]],
+                [size[3]],
+            ]
+            appendGuardSizes(problemSizes, size, modifiedSize)
+            modifiedSize = [
+                [size[0]],
+                [size[1]],
+                [size[2]],
+                [size[3] - 1, 2, size[3] + 1],
+            ]
+            appendGuardSizes(problemSizes, size, modifiedSize)
     else:
         for size in sizes:
             if rk:
-                appendExactSizes(problemSizes,size)
+                appendExactSizes(problemSizes, size)
             else:
                 problemSizes.append({"Exact": size})
 
@@ -298,25 +391,35 @@ def appendSizes(benchmarkGroup, sizes, tileAware=False, noExact=False, rk=False)
         benchmarkGroup["BenchmarkFinalParameters"] = benchmarkFinalParams
 
     if not tileAware:
-        benchmarkFinalParams.append({"ProblemSizes":problemSizes})
+        benchmarkFinalParams.append({"ProblemSizes": problemSizes})
+
 
 def generateEmptyBenchmarkGroup():
-    benchmarkGroup={"InitialSolutionParameters":None,"BenchmarkCommonParameters":None,"ForkParameters":None,"BenchmarkForkParameters":None,"JoinParameters":None,
-                    "BenchmarkJoinParameters":None,"BenchmarkFinalParameters":None}
+    benchmarkGroup = {
+        "InitialSolutionParameters": None,
+        "BenchmarkCommonParameters": None,
+        "ForkParameters": None,
+        "BenchmarkForkParameters": None,
+        "JoinParameters": None,
+        "BenchmarkJoinParameters": None,
+        "BenchmarkFinalParameters": None,
+    }
 
     return benchmarkGroup
 
 
 def generateDefaultScheme():
-    scheme={"EdgeType": ["ShiftPtr"],
-            "KernelLanguage": ["Assembly"],
-            "LoopTail": [True],
-            "WorkGroupMapping": [1, 8],
-            "DepthU": [16],
-            "VectorWidth": [-1],
-            "GlobalSplitU": [1],
-            "GlobalReadVectorWidth": [-1],
-            "FractionalLoad": [1],
-            "PrefetchGlobalRead": [ False ],
-            "PrefetchLocalRead": [ False, True]}
+    scheme = {
+        "EdgeType": ["ShiftPtr"],
+        "KernelLanguage": ["Assembly"],
+        "LoopTail": [True],
+        "WorkGroupMapping": [1, 8],
+        "DepthU": [16],
+        "VectorWidth": [-1],
+        "GlobalSplitU": [1],
+        "GlobalReadVectorWidth": [-1],
+        "FractionalLoad": [1],
+        "PrefetchGlobalRead": [False],
+        "PrefetchLocalRead": [False, True],
+    }
     return scheme

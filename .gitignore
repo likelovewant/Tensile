@@ -64,3 +64,5 @@ tags
 # Uncompressed HostLibraryTest libraries
 HostLibraryTests/configs/SolutionLibraries/*.dat
 HostLibraryTests/configs/SolutionLibraries/*.yaml
+
+env/

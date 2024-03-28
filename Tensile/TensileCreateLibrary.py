@@ -1080,6 +1080,11 @@ def generateLogicDataAndSolutions(logicFiles, args):
       for key, value in masterLibraries.items():
         if key != "fallback":
           value.merge(deepcopy(masterLibraries["fallback"]))
+      for architectureName in parseArchitecturesFromArgs(args.Architecture, True):
+        if architectureName not in masterLibraries:
+          print("Using fallback for arch: "+architectureName)
+          masterLibraries[architectureName] = deepcopy(masterLibraries["fallback"])
+          masterLibraries[architectureName].version = args.version
 
       masterLibraries.pop("fallback")
 
@@ -1151,6 +1156,17 @@ def WriteClientLibraryFromSolutions(solutionList, libraryWorkingPath, tensileSou
   codeObjectFiles, newLibrary = writeBenchmarkClientFiles(libraryWorkingPath, tensileSourcePath, solutionList, cxxCompiler )
 
   return (codeObjectFiles, newLibrary)
+
+def parseArchitecturesFromArgs(architectureArgValue, handleLiteralAllAsList):
+  if architectureArgValue == 'all' and handleLiteralAllAsList:
+    archs = [gfxName(arch) for arch in globalParameters['SupportedISA']]
+  else:
+    if ";" in architectureArgValue:
+      archs = architectureArgValue.split(";") # user arg list format
+    else:
+      archs = architectureArgValue.split("_") # workaround for cmake list in list issue
+
+  return archs
 
 ################################################################################
 # Tensile Create Library
@@ -1272,10 +1288,7 @@ def TensileCreateLibrary():
   if not os.path.exists(logicPath):
     printExit("LogicPath %s doesn't exist" % logicPath)
 
-  if ";" in arguments["Architecture"]:
-    archs = arguments["Architecture"].split(";") # user arg list format
-  else:
-    archs = arguments["Architecture"].split("_") # workaround for cmake list in list issue
+  archs = parseArchitecturesFromArgs(arguments["Architecture"], False)
   logicArchs = set()
   for arch in archs:
     if arch in architectureMap:
