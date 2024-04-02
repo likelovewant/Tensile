@@ -300,6 +300,11 @@ navi22LibraryLogic = {
     "DeviceNames": ["Device 73df"],
     "ScheduleName": "navi22",
 }
+navi23LibraryLogic = {
+    "ArchitectureName": "gfx1032",
+    "DeviceNames": ["Device 73ff"],
+    "ScheduleName": "navi23",
+}
 
 libraryLogicMapper = {
     "arcturus": arcturusLibraryLogic,
@@ -309,6 +314,7 @@ libraryLogicMapper = {
     "r9nano": r9nanoLibraryLogic,
     "hip": hipLibraryLogic,
     "navi22": navi22LibraryLogic,
+    "navi23": navi23LibraryLogic,
 }
 
 
