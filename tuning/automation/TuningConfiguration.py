@@ -275,6 +275,7 @@ vega10LibraryLogic = {
         "Device 687f",
         "Device 6860",
         "Device 6861",
+        "Device aaf8",
         "Vega 10 XTX [Radeon Vega Frontier Edition]",
         "Vega [Radeon RX Vega]",
     ],
