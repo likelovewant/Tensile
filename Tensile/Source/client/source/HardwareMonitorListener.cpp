@@ -116,8 +116,8 @@ namespace Tensile
 
             // To log the detailed report of indvidual frequency, power, temperature data values and
             // min, max, average, median report for each GEMM kernel run.
-            if(m_reporter->logAtLevel(LogLevel::Debug))
-                m_monitor->logMinMaxMedianAverage();
+            // if(m_reporter->logAtLevel(LogLevel::Debug))
+            //     m_monitor->logMinMaxMedianAverage();
         }
     } // namespace Client
 } // namespace Tensile
