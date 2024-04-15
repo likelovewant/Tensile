@@ -288,7 +288,7 @@ mi25LibraryLogic = {
 }
 r9nanoLibraryLogic = {
     "ArchitectureName": "gfx803",
-    "DeviceNames": ["Device 7300"],
+    "DeviceNames": ["Device 7300", "Device 67df"],
     "ScheduleName": "r9nano",
 }
 hipLibraryLogic = {
