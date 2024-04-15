@@ -492,7 +492,7 @@ class MasterSolutionLibrary:
         if self.lazyLibraries:
             curIndex = max(
                 curIndex,
-                max(max(lib.solutions.keys()) for _, lib in self.lazyLibraries.items()) + 1)
+                max(max(lib.solutions.keys(), default=-1) for _, lib in self.lazyLibraries.items()) + 1)
 
         #Merge separate library files
         for name, lib in other.lazyLibraries.items():

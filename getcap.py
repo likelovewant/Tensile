@@ -242,8 +242,12 @@ def GetAsmCaps(isaVersion):
     else:
         derivedAsmCaps["MaxVmcnt"] = 0
 
-    # TODO- Need to query the max cap, just like vmcnt as well?
-    derivedAsmCaps["MaxLgkmcnt"] = 15
+    if tryAssembler(isaVersion, "s_waitcnt lgkmcnt(63)"):
+        derivedAsmCaps["MaxLgkmcnt"] = 63
+    elif tryAssembler(isaVersion, "s_waitcnt lgkmcnt(15)"):
+        derivedAsmCaps["MaxLgkmcnt"] = 15
+    else:
+        derivedAsmCaps["MaxLgkmcnt"] = 0
 
     derivedAsmCaps["SupportedSource"] = True
 
@@ -256,4 +260,3 @@ if __name__ == "__main__":
         gcn_arch = "gfx900"
 
     print(GetAsmCaps(gfxArch(gcn_arch)))
-
