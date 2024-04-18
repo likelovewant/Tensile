@@ -48,7 +48,10 @@ def locateExe(defaultPath, exeName):  # /opt/rocm/bin, hip-clang
     return None
 
 
-ASSEMBLER_PATH = locateExe(os.path.join("/opt/rocm", "llvm/bin"), "clang++")
+ASSEMBLER_PATH = (
+    locateExe(os.path.join("/opt/rocm", "llvm/bin"), "clang++")
+    or "C:\\Program Files\\AMD\\ROCm\\5.7\\bin\\clang++.exe"
+)
 
 def tryAssembler(isaVersion, asmString, debug=False, *options):
     """
