@@ -210,6 +210,8 @@ def Tensile(userArgs):
             help="Ignore cache; redo parameter forking and solution generation")
     argParser.add_argument("--client-path", dest="ClientPath", default=None,
             help="Path to directory to build benchmarking client")
+    
+    argParser.add_argument("--skip-library-client", action="store_true", help="skip library client generation")
     # yapf: enable
 
     addCommonArguments(argParser)
@@ -219,6 +221,8 @@ def Tensile(userArgs):
     altFormat = args.AlternateFormat
     useCache = not args.NoCache
     clientPath = args.ClientPath
+
+    skipLibraryClient = args.skip_library_client
 
     if altFormat and len(configPaths) > 2:
         printExit("Only 1 or 2 config_files are accepted for the alternate config format: "
@@ -274,6 +278,9 @@ def Tensile(userArgs):
 
     config["UseCache"] = useCache
     globalParameters["ConfigPath"] = configPaths
+
+    if skipLibraryClient:
+        del config["LibraryClient"]
 
     # assign global parameters
     if "GlobalParameters" in config:
