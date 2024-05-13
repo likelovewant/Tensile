@@ -279,7 +279,7 @@ def Tensile(userArgs):
     config["UseCache"] = useCache
     globalParameters["ConfigPath"] = configPaths
 
-    if skipLibraryClient:
+    if skipLibraryClient and 'LibraryClient' in config:
         del config["LibraryClient"]
 
     # assign global parameters
